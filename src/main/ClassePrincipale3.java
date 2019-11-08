@@ -167,14 +167,15 @@ public class ClassePrincipale3 {
 				    if(!values.get(0).equals(current)) {
 				    	current = values.get(0);
 				    	values.set(0,date+values.get(0)+".00");
-				    	
-				    	count = 1;
+				    	count = 4;
 				    }else {
-				    	if(count<10)
+				    	if(count<=8)	//	Cas 0 en décimale
 				    		values.set(0, date+values.get(0)+".0"+count);
-				    	else
+				    	else if(count>=100)
+				    		line=null;	//	On annule l'écriture de la ligne courante en renvoyant null dans sa variable
+				    	else			//	Cas écriture
 				    		values.set(0, date+values.get(0)+"."+count);
-				    	count++;
+				    	count+=4;
 				    }
 				    
 				    
@@ -182,32 +183,34 @@ public class ClassePrincipale3 {
 				    	
 				    
 							    
-							    
+				    if(line != null) {	//	On vérifie que la ligne n'est pas vide avant d'écrire.
+				    					//		cela permet de vérifier que la ligne a bien été validée précedemment.
+					    String lineText = "";
+					    	
+					    // Remise en place des points virgules sauf la dernière ligne
+					    for(int j = 0; j<values.size()-1; j++)
+					    	values.set(j, values.get(j)+";");
+					    // Définition d'une ligne
+					    for(String var : values)
+					    	lineText += var;
+					    
+					    lineText = lineText.replaceAll(",", ".");				    
+					    
+					    
+					    /*
+					    System.out.println("taille : "+values.size());
+					    for(int jo=0; jo<values.size(); jo++)
+					    	System.out.println(jo+" : "+values.get(jo));
+					    Thread.sleep(20000);
+					    */
+					    
+					    
+					    
+					    
+					    bw.write(lineText);
+					    bw.newLine();
+				    }
 				    
-				    String lineText = "";
-				    	
-				    // Remise en place des points virgules sauf la dernière ligne
-				    for(int j = 0; j<values.size()-1; j++)
-				    	values.set(j, values.get(j)+";");
-				    // Définition d'une ligne
-				    for(String var : values)
-				    	lineText += var;
-				    
-				    lineText = lineText.replaceAll(",", ".");				    
-				    
-				    
-				    /*
-				    System.out.println("taille : "+values.size());
-				    for(int jo=0; jo<values.size(); jo++)
-				    	System.out.println(jo+" : "+values.get(jo));
-				    Thread.sleep(20000);
-				    */
-				    
-				    
-				    
-				    
-				    bw.write(lineText);
-				    bw.newLine();
 				}
 				
 				br.close();
@@ -266,12 +269,14 @@ public class ClassePrincipale3 {
 	            
 	            int total_space=0;
 	            
+	            
 	            for(File file : files) {
-	            	System.out.println(" -> "+file.getName());
-	            	total_space+=file.length();
+	            	System.out.println(" -> "+file.getName()+" : "+file.length()/(1024*1024)+" MB");
+	            	total_space+=file.length()/(1024*1024);
 	            }
 	            
-	            System.out.println("Total files size : "+total_space/(1024*1024)+" MB");
+	            System.out.println("First file size "+files[0].getName()+" -> "+files[0].length()/(1024*1024));
+	            System.out.println("Total files size : "+total_space+" MB");
 	            
 	            
 	            
